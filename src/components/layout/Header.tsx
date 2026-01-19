@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Bell, User, Sun, Moon, AlertTriangle, LogOut, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import handyfixLogo from '@/assets/handyfix-logo.png';
 
 const navLinks = [
   { path: '/', label: 'Home' },
@@ -22,6 +23,8 @@ const navLinks = [
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const notificationRef = useRef<HTMLDivElement>(null);
   const [notifications] = useState([
     { id: 1, message: 'Your booking is confirmed', time: '5 min ago', unread: true },
     { id: 2, message: 'New provider in your area', time: '1 hour ago', unread: true },
@@ -33,6 +36,23 @@ const Header: React.FC = () => {
 
   const unreadCount = notifications.filter(n => n.unread).length;
 
+  // Close notifications on outside click
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
+        setIsNotificationsOpen(false);
+      }
+    };
+
+    if (isNotificationsOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isNotificationsOpen]);
+
   return (
     <header className="sticky top-0 z-50 w-full glass">
       <div className="container mx-auto px-4">
@@ -42,8 +62,12 @@ const Header: React.FC = () => {
             to="/" 
             className="flex items-center gap-2 group"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-              <span className="text-primary-foreground font-bold text-xl">H</span>
+            <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+              <img 
+                src={handyfixLogo} 
+                alt="HandyFix Logo" 
+                className="w-full h-full object-contain"
+              />
             </div>
             <span className="font-display font-bold text-xl text-foreground transition-colors">
               HandyFix
@@ -91,37 +115,59 @@ const Header: React.FC = () => {
               )}
             </Button>
 
-            {/* Notifications */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full relative">
-                  <Bell className="w-5 h-5" />
-                  {unreadCount > 0 && (
-                    <span className="notification-badge">{unreadCount}</span>
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-80 bg-popover border border-border shadow-xl">
+            {/* Notifications - Custom dropdown with auto-close */}
+            <div className="relative" ref={notificationRef}>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="rounded-full relative"
+                onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
+                onBlur={(e) => {
+                  // Close if focus moves outside the notification area
+                  if (!notificationRef.current?.contains(e.relatedTarget as Node)) {
+                    setTimeout(() => setIsNotificationsOpen(false), 150);
+                  }
+                }}
+              >
+                <Bell className="w-5 h-5" />
+                {unreadCount > 0 && (
+                  <span className="notification-badge">{unreadCount}</span>
+                )}
+              </Button>
+              
+              {/* Notification Panel */}
+              <div 
+                className={`absolute right-0 top-full mt-2 w-80 bg-popover border border-border rounded-xl shadow-xl z-50 overflow-hidden transition-all duration-200 origin-top-right ${
+                  isNotificationsOpen 
+                    ? 'opacity-100 scale-100 translate-y-0' 
+                    : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
+                }`}
+              >
                 <div className="px-4 py-3 border-b border-border">
                   <h4 className="font-semibold text-foreground">Notifications</h4>
                 </div>
                 {notifications.map((notification) => (
-                  <DropdownMenuItem 
+                  <button 
                     key={notification.id}
-                    className={`flex flex-col items-start gap-1 px-4 py-3 cursor-pointer ${
+                    className={`w-full flex flex-col items-start gap-1 px-4 py-3 cursor-pointer transition-colors duration-150 hover:bg-muted text-left ${
                       notification.unread ? 'bg-primary/5' : ''
                     }`}
+                    onClick={() => setIsNotificationsOpen(false)}
                   >
                     <span className="text-sm text-foreground">{notification.message}</span>
                     <span className="text-xs text-muted-foreground">{notification.time}</span>
-                  </DropdownMenuItem>
+                  </button>
                 ))}
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-center text-primary font-medium justify-center">
-                  View all notifications
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                <div className="border-t border-border">
+                  <button 
+                    className="w-full text-center text-primary font-medium py-3 hover:bg-muted transition-colors duration-150"
+                    onClick={() => setIsNotificationsOpen(false)}
+                  >
+                    View all notifications
+                  </button>
+                </div>
+              </div>
+            </div>
 
             {/* User Menu / Auth */}
             {isAuthenticated ? (
