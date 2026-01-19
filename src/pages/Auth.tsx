@@ -51,22 +51,22 @@ const Auth: React.FC = () => {
   return (
     <div className="min-h-screen flex bg-background">
       {/* Left Side - Form */}
-      <div className="flex-1 flex items-center justify-center px-8 py-12">
-        <div className="w-full max-w-md space-y-8">
+      <div className="flex-1 flex items-center justify-center px-4 sm:px-8 py-8 sm:py-12">
+        <div className="w-full max-w-md space-y-6 sm:space-y-8">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-orange-400 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-              <span className="text-white font-bold text-2xl">H</span>
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-primary to-amber-500 flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:shadow-md">
+              <span className="text-primary-foreground font-bold text-xl sm:text-2xl">H</span>
             </div>
-            <span className="font-display font-bold text-2xl text-foreground">HandyFix</span>
+            <span className="font-display font-bold text-xl sm:text-2xl text-foreground">HandyFix</span>
           </Link>
 
           {/* Header */}
           <div className="space-y-2">
-            <h1 className="font-display text-3xl font-bold text-foreground">
+            <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">
               {isLogin ? 'Welcome back' : 'Create account'}
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-sm sm:text-base text-muted-foreground">
               {isLogin 
                 ? 'Sign in to access your account and book services'
                 : 'Join HandyFix to find trusted service providers'}
@@ -74,79 +74,79 @@ const Auth: React.FC = () => {
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
             {!isLogin && (
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 <label className="text-sm font-medium text-foreground">Full Name</label>
                 <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="John Doe"
-                    className="input-modern pl-12"
+                    className="input-modern pl-10 sm:pl-12 text-sm sm:text-base"
                     required={!isLogin}
                   />
                 </div>
               </div>
             )}
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <label className="text-sm font-medium text-foreground">Email Address</label>
               <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="input-modern pl-12"
+                  className="input-modern pl-10 sm:pl-12 text-sm sm:text-base"
                   required
                 />
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <label className="text-sm font-medium text-foreground">Password</label>
               <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="input-modern pl-12 pr-12"
+                  className="input-modern pl-10 sm:pl-12 pr-10 sm:pr-12 text-sm sm:text-base"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors duration-200"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" /> : <Eye className="w-4 h-4 sm:w-5 sm:h-5" />}
                 </button>
               </div>
             </div>
 
             {isLogin && (
-              <div className="flex items-center justify-between">
-                <label className="flex items-center gap-3 cursor-pointer group">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <label className="flex items-center gap-2 sm:gap-3 cursor-pointer group">
                   <div 
                     onClick={() => setRememberMe(!rememberMe)}
-                    className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all duration-200 ${
+                    className={`w-4 h-4 sm:w-5 sm:h-5 rounded-md border-2 flex items-center justify-center transition-all duration-200 ${
                       rememberMe 
                         ? 'bg-primary border-primary' 
-                        : 'border-border group-hover:border-primary/50'
+                        : 'border-border group-hover:border-primary/40'
                     }`}
                   >
-                    {rememberMe && <Check className="w-3 h-3 text-primary-foreground" />}
+                    {rememberMe && <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-primary-foreground" />}
                   </div>
-                  <span className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+                  <span className="text-xs sm:text-sm text-muted-foreground group-hover:text-foreground transition-colors duration-200">
                     Remember me
                   </span>
                 </label>
-                <a href="#" className="text-sm text-primary hover:underline">
+                <a href="#" className="text-xs sm:text-sm text-primary hover:underline transition-colors duration-200">
                   Forgot password?
                 </a>
               </div>
@@ -234,20 +234,20 @@ const Auth: React.FC = () => {
       </div>
 
       {/* Right Side - Hero Image */}
-      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-primary/10 to-accent/10 items-center justify-center p-12">
-        <div className="max-w-lg space-y-8 text-center">
-          <div className="w-32 h-32 mx-auto rounded-3xl bg-gradient-to-br from-primary to-orange-400 flex items-center justify-center animate-float">
-            <span className="text-white font-bold text-6xl">H</span>
+      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-primary/8 via-muted to-accent/8 items-center justify-center p-8 xl:p-12">
+        <div className="max-w-lg space-y-6 xl:space-y-8 text-center">
+          <div className="w-28 h-28 xl:w-32 xl:h-32 mx-auto rounded-3xl bg-gradient-to-br from-primary to-amber-500 flex items-center justify-center animate-float shadow-lg shadow-primary/20">
+            <span className="text-primary-foreground font-bold text-5xl xl:text-6xl">H</span>
           </div>
-          <h2 className="font-display text-3xl font-bold text-foreground">
+          <h2 className="font-display text-2xl xl:text-3xl font-bold text-foreground">
             Find Trusted Professionals
           </h2>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-muted-foreground text-base xl:text-lg leading-relaxed">
             Connect with verified handymen, plumbers, electricians, and more. Quality service guaranteed.
           </p>
-          <div className="flex justify-center gap-4">
+          <div className="flex flex-wrap justify-center gap-3">
             {['✓ Verified Providers', '✓ 24/7 Support', '✓ Secure Payments'].map((feature) => (
-              <span key={feature} className="text-sm text-muted-foreground bg-card px-4 py-2 rounded-full">
+              <span key={feature} className="text-xs xl:text-sm text-muted-foreground bg-card/80 backdrop-blur-sm px-3 xl:px-4 py-2 rounded-full border border-border/50 shadow-sm">
                 {feature}
               </span>
             ))}
