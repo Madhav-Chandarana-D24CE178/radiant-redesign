@@ -116,18 +116,16 @@ const Header: React.FC = () => {
             </Button>
 
             {/* Notifications - Custom dropdown with auto-close */}
-            <div className="relative" ref={notificationRef}>
+            <div 
+              className="relative" 
+              ref={notificationRef}
+              onMouseLeave={() => setTimeout(() => setIsNotificationsOpen(false), 200)}
+            >
               <Button 
                 variant="ghost" 
                 size="icon" 
                 className="rounded-full relative"
                 onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
-                onBlur={(e) => {
-                  // Close if focus moves outside the notification area
-                  if (!notificationRef.current?.contains(e.relatedTarget as Node)) {
-                    setTimeout(() => setIsNotificationsOpen(false), 150);
-                  }
-                }}
               >
                 <Bell className="w-5 h-5" />
                 {unreadCount > 0 && (
@@ -137,19 +135,19 @@ const Header: React.FC = () => {
               
               {/* Notification Panel */}
               <div 
-                className={`absolute right-0 top-full mt-2 w-80 bg-popover border border-border rounded-xl shadow-xl z-50 overflow-hidden transition-all duration-200 origin-top-right ${
+                className={`absolute right-0 top-full mt-2 w-80 bg-popover border border-border rounded-xl shadow-xl z-50 overflow-hidden transition-all duration-200 ease-out origin-top-right ${
                   isNotificationsOpen 
-                    ? 'opacity-100 scale-100 translate-y-0' 
-                    : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
+                    ? 'opacity-100 scale-100 translate-y-0 visible' 
+                    : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'
                 }`}
               >
-                <div className="px-4 py-3 border-b border-border">
+                <div className="px-4 py-3 border-b border-border bg-popover">
                   <h4 className="font-semibold text-foreground">Notifications</h4>
                 </div>
                 {notifications.map((notification) => (
                   <button 
                     key={notification.id}
-                    className={`w-full flex flex-col items-start gap-1 px-4 py-3 cursor-pointer transition-colors duration-150 hover:bg-muted text-left ${
+                    className={`w-full flex flex-col items-start gap-1 px-4 py-3 cursor-pointer transition-colors duration-150 hover:bg-muted text-left bg-popover ${
                       notification.unread ? 'bg-primary/5' : ''
                     }`}
                     onClick={() => setIsNotificationsOpen(false)}
@@ -158,7 +156,7 @@ const Header: React.FC = () => {
                     <span className="text-xs text-muted-foreground">{notification.time}</span>
                   </button>
                 ))}
-                <div className="border-t border-border">
+                <div className="border-t border-border bg-popover">
                   <button 
                     className="w-full text-center text-primary font-medium py-3 hover:bg-muted transition-colors duration-150"
                     onClick={() => setIsNotificationsOpen(false)}

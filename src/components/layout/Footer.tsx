@@ -11,6 +11,7 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import handyfixLogo from '@/assets/handyfix-logo.png';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
@@ -22,8 +23,8 @@ const Footer: React.FC = () => {
           {/* Brand Section */}
           <div className="space-y-6">
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-primary-glow flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
-                <span className="text-primary-foreground font-bold text-xl">H</span>
+              <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                <img src={handyfixLogo} alt="HandyFix Logo" className="w-full h-full object-contain" />
               </div>
               <span className="font-display font-bold text-xl text-foreground">
                 HandyFix
