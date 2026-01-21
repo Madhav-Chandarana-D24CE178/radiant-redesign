@@ -23,8 +23,8 @@ import { Button } from '@/components/ui/button';
 
 const categories = [
   { icon: Wrench, name: 'Plumbing', count: '245+ Providers', color: 'from-blue-500 to-blue-600' },
-  { icon: Zap, name: 'Electrical', count: '189+ Providers', color: 'from-yellow-500 to-orange-500' },
-  { icon: Hammer, name: 'Carpentry', count: '156+ Providers', color: 'from-amber-600 to-amber-700' },
+  { icon: Zap, name: 'Electrical', count: '189+ Providers', color: 'from-emerald-500 to-teal-500' },
+  { icon: Hammer, name: 'Carpentry', count: '156+ Providers', color: 'from-teal-600 to-teal-700' },
   { icon: Paintbrush, name: 'Painting', count: '178+ Providers', color: 'from-purple-500 to-purple-600' },
   { icon: Droplet, name: 'Cleaning', count: '312+ Providers', color: 'from-cyan-500 to-cyan-600' },
   { icon: Wind, name: 'HVAC', count: '98+ Providers', color: 'from-teal-500 to-teal-600' },
@@ -370,7 +370,7 @@ const Index: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-r from-primary to-orange-500">
+      <section className="py-20 bg-gradient-to-r from-primary to-accent">
         <div className="container mx-auto px-4 text-center">
           <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">
             Ready to Get Started?

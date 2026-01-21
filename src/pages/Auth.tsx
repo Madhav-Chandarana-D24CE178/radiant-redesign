@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
+import handyfixLogo from '@/assets/handyfix-logo.png';
 
 const Auth: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -55,8 +56,8 @@ const Auth: React.FC = () => {
         <div className="w-full max-w-md space-y-6 sm:space-y-8">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-primary to-amber-500 flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:shadow-md">
-              <span className="text-primary-foreground font-bold text-xl sm:text-2xl">H</span>
+            <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden flex items-center justify-center transition-all duration-300 group-hover:scale-105 group-hover:shadow-md">
+              <img src={handyfixLogo} alt="HandyFix Logo" className="w-full h-full object-contain" />
             </div>
             <span className="font-display font-bold text-xl sm:text-2xl text-foreground">HandyFix</span>
           </Link>
@@ -236,8 +237,8 @@ const Auth: React.FC = () => {
       {/* Right Side - Hero Image */}
       <div className="hidden lg:flex flex-1 bg-gradient-to-br from-primary/8 via-muted to-accent/8 items-center justify-center p-8 xl:p-12">
         <div className="max-w-lg space-y-6 xl:space-y-8 text-center">
-          <div className="w-28 h-28 xl:w-32 xl:h-32 mx-auto rounded-3xl bg-gradient-to-br from-primary to-amber-500 flex items-center justify-center animate-float shadow-lg shadow-primary/20">
-            <span className="text-primary-foreground font-bold text-5xl xl:text-6xl">H</span>
+          <div className="w-28 h-28 xl:w-32 xl:h-32 mx-auto rounded-3xl overflow-hidden flex items-center justify-center animate-float shadow-lg shadow-primary/20 bg-gradient-to-br from-primary/10 to-accent/10 p-4">
+            <img src={handyfixLogo} alt="HandyFix Logo" className="w-full h-full object-contain" />
           </div>
           <h2 className="font-display text-2xl xl:text-3xl font-bold text-foreground">
             Find Trusted Professionals
