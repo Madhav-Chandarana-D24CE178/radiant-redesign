@@ -4,13 +4,6 @@ import { Menu, X, Bell, User, Sun, Moon, AlertTriangle, LogOut, Settings } from 
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import handyfixLogo from '@/assets/handyfix-logo.png';
 
 const navLinks = [
@@ -24,6 +17,7 @@ const navLinks = [
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
   const [notifications] = useState([
     { id: 1, message: 'Your booking is confirmed', time: '5 min ago', unread: true },
@@ -167,50 +161,72 @@ const Header: React.FC = () => {
               </div>
             </div>
 
-            {/* User Menu / Auth */}
+            {/* User Menu / Auth - Custom dropdown with auto-close on mouse leave */}
             {isAuthenticated ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-full">
-                    {user?.avatar ? (
-                      <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full object-cover" />
-                    ) : (
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <User className="w-4 h-4 text-primary" />
-                      </div>
-                    )}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-popover border border-border shadow-xl">
-                  <div className="px-4 py-3 border-b border-border">
+              <div 
+                className="relative"
+                onMouseLeave={() => setIsProfileOpen(false)}
+              >
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="rounded-full"
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                >
+                  {user?.avatar ? (
+                    <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full object-cover" />
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                      <User className="w-4 h-4 text-primary" />
+                    </div>
+                  )}
+                </Button>
+                
+                {/* Profile Dropdown Panel */}
+                <div 
+                  className={`absolute right-0 top-full mt-2 w-56 bg-popover border border-border rounded-xl shadow-xl z-50 overflow-hidden transition-all duration-200 ease-out origin-top-right ${
+                    isProfileOpen 
+                      ? 'opacity-100 scale-100 translate-y-0 visible' 
+                      : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'
+                  }`}
+                >
+                  <div className="px-4 py-3 border-b border-border bg-popover">
                     <p className="font-semibold text-foreground">{user?.name}</p>
                     <p className="text-sm text-muted-foreground">{user?.email}</p>
                   </div>
-                  <DropdownMenuItem className="gap-2 cursor-pointer">
+                  <Link 
+                    to="/profile" 
+                    className="flex items-center gap-2 px-4 py-2.5 hover:bg-muted transition-colors cursor-pointer"
+                    onClick={() => setIsProfileOpen(false)}
+                  >
                     <User className="w-4 h-4" />
-                    Profile
-                  </DropdownMenuItem>
-                  <DropdownMenuItem className="gap-2 cursor-pointer">
+                    <span className="text-sm">Profile</span>
+                  </Link>
+                  <button 
+                    className="w-full flex items-center gap-2 px-4 py-2.5 hover:bg-muted transition-colors cursor-pointer text-left"
+                    onClick={() => { setIsProfileOpen(false); }}
+                  >
                     <Settings className="w-4 h-4" />
-                    Settings
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    className="gap-2 cursor-pointer"
-                    onClick={toggleTheme}
+                    <span className="text-sm">Settings</span>
+                  </button>
+                  <button 
+                    className="w-full flex items-center gap-2 px-4 py-2.5 hover:bg-muted transition-colors cursor-pointer text-left"
+                    onClick={() => { toggleTheme(); setIsProfileOpen(false); }}
                   >
                     {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-                    {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem 
-                    className="gap-2 text-destructive cursor-pointer"
-                    onClick={logout}
-                  >
-                    <LogOut className="w-4 h-4" />
-                    Logout
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                    <span className="text-sm">{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
+                  </button>
+                  <div className="border-t border-border">
+                    <button 
+                      className="w-full flex items-center gap-2 px-4 py-2.5 hover:bg-muted transition-colors cursor-pointer text-left text-destructive"
+                      onClick={() => { logout(); setIsProfileOpen(false); }}
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span className="text-sm">Logout</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
             ) : (
               <Link to="/auth">
                 <Button variant="default" size="sm">
