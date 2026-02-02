@@ -87,8 +87,8 @@ const Contact: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">Phone</h3>
-                    <a href="tel:+1234567890" className="text-muted-foreground hover:text-primary transition-colors">
-                      +1 (234) 567-890
+                    <a href="tel:+919876543210" className="text-muted-foreground hover:text-primary transition-colors">
+                      +91 98765 43210
                     </a>
                   </div>
                 </div>
@@ -100,9 +100,9 @@ const Contact: React.FC = () => {
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">Address</h3>
                     <p className="text-muted-foreground">
-                      123 Service Street<br />
-                      Business District<br />
-                      City, State 12345
+                      Bandra<br />
+                      Mumbai 400050<br />
+                      Maharashtra, India
                     </p>
                   </div>
                 </div>
@@ -185,7 +185,7 @@ const Contact: React.FC = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        placeholder="+1 (234) 567-890"
+                        placeholder="+91 98765 43210"
                         className="input-modern"
                       />
                     </div>
@@ -257,14 +257,14 @@ const Contact: React.FC = () => {
         <div className="container mx-auto px-4">
           <div className="rounded-2xl overflow-hidden border border-border">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.182919579696!2d-73.98823492346988!3d40.75889097138682!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1699999999999!5m2!1sen!2sus"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.0937872231597!2d72.82652!3d19.05975!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7ca6e0000000d%3A0x0!2sBandra%2C%20Mumbai%2C%20Maharashtra%2C%20India!5e0!3m2!1sen!2sin!4v1699999999999!5m2!1sen!2sin"
               width="100%"
               height="400"
               style={{ border: 0 }}
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="HandyFix Location"
+              title="HandyFix Location in Mumbai"
             />
           </div>
         </div>
