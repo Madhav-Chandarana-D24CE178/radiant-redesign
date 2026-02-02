@@ -184,12 +184,14 @@ const Header: React.FC = () => {
                 </Button>
                 
                 {/* Profile Dropdown Panel */}
-                <div 
+                <div
                   className={`absolute right-0 top-full mt-2 w-56 bg-popover border border-border rounded-xl shadow-xl z-50 overflow-hidden transition-all duration-200 ease-out origin-top-right ${
-                    isProfileOpen 
-                      ? 'opacity-100 scale-100 translate-y-0 visible' 
+                    isProfileOpen
+                      ? 'opacity-100 scale-100 translate-y-0 visible'
                       : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'
                   }`}
+                  onMouseEnter={() => setIsProfileOpen(true)}
+                  onMouseLeave={() => setTimeout(() => setIsProfileOpen(false), 200)}
                 >
                   <div className="px-4 py-3 border-b border-border bg-popover">
                     <p className="font-semibold text-foreground">{user?.name}</p>
