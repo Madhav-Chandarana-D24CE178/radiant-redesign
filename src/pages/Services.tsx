@@ -188,100 +188,118 @@ const Services: React.FC = () => {
       {/* Main Content */}
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row gap-8">
-            {/* Filters Sidebar */}
-            <aside className={`lg:w-72 flex-shrink-0 ${showFilters ? 'block' : 'hidden lg:block'}`}>
-              <div className="bg-card border border-border rounded-2xl p-6 sticky top-24">
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="font-semibold text-foreground text-lg">Filters</h3>
-                  <Button 
-                    variant="ghost" 
+          {/* Horizontal Filters & Sort */}
+          <div className="flex flex-col gap-4 mb-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <p className="text-muted-foreground">
+                Showing <span className="font-medium text-foreground">{sortedServices.length}</span> services
+              </p>
+              <div className="flex flex-wrap items-center gap-2">
+                {/* Category Filter Dropdown */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowFilters(!showFilters)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-card border border-border text-foreground hover:bg-muted transition-colors"
+                  >
+                    <Filter className="w-4 h-4" />
+                    <span className="text-sm font-medium">Filters</span>
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+
+                  {showFilters && (
+                    <div className="absolute top-full mt-2 left-0 w-56 bg-card border border-border rounded-xl shadow-lg z-50 p-4">
+                      <div className="flex items-center justify-between mb-4">
+                        <h4 className="font-semibold text-foreground">Category</h4>
+                        <button
+                          onClick={() => setSelectedCategory('all')}
+                          className="text-xs text-primary hover:text-primary/80"
+                        >
+                          Clear
+                        </button>
+                      </div>
+                      <div className="space-y-2 mb-4">
+                        {serviceCategories.map((category) => (
+                          <button
+                            key={category.id}
+                            onClick={() => setSelectedCategory(category.id)}
+                            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${
+                              selectedCategory === category.id
+                                ? 'bg-primary text-primary-foreground font-medium'
+                                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                            }`}
+                          >
+                            {category.name}
+                          </button>
+                        ))}
+                      </div>
+
+                      <div className="border-t border-border pt-4">
+                        <div className="flex items-center justify-between mb-3">
+                          <h4 className="font-semibold text-foreground">Price Range</h4>
+                          <button
+                            onClick={() => setSelectedPrice('all')}
+                            className="text-xs text-primary hover:text-primary/80"
+                          >
+                            Clear
+                          </button>
+                        </div>
+                        <div className="space-y-2">
+                          {priceRanges.map((range) => (
+                            <button
+                              key={range.id}
+                              onClick={() => setSelectedPrice(range.id)}
+                              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${
+                                selectedPrice === range.id
+                                  ? 'bg-primary text-primary-foreground font-medium'
+                                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                              }`}
+                            >
+                              {range.label}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Sort Dropdown */}
+                <div className="relative">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="appearance-none bg-card border border-border rounded-xl px-4 py-2 pr-10 text-sm font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                  >
+                    <option value="popular">Most Popular</option>
+                    <option value="rating">Highest Rated</option>
+                    <option value="price-low">Price: Low to High</option>
+                    <option value="price-high">Price: High to Low</option>
+                  </select>
+                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                </div>
+
+                {/* Clear All Button */}
+                {(selectedCategory !== 'all' || selectedPrice !== 'all') && (
+                  <Button
+                    variant="ghost"
                     size="sm"
                     onClick={() => {
                       setSelectedCategory('all');
                       setSelectedPrice('all');
+                      setShowFilters(false);
                     }}
                     className="text-muted-foreground hover:text-primary"
                   >
                     Clear All
                   </Button>
-                </div>
-
-                {/* Category Filter */}
-                <div className="mb-6">
-                  <h4 className="font-medium text-foreground mb-3">Category</h4>
-                  <div className="space-y-2">
-                    {serviceCategories.map((category) => (
-                      <button
-                        key={category.id}
-                        onClick={() => setSelectedCategory(category.id)}
-                        className={`w-full text-left px-4 py-2.5 rounded-xl text-sm transition-all ${
-                          selectedCategory === category.id
-                            ? 'bg-primary text-primary-foreground font-medium'
-                            : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                        }`}
-                      >
-                        {category.name}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Price Filter */}
-                <div className="mb-6">
-                  <h4 className="font-medium text-foreground mb-3">Price Range</h4>
-                  <div className="space-y-2">
-                    {priceRanges.map((range) => (
-                      <button
-                        key={range.id}
-                        onClick={() => setSelectedPrice(range.id)}
-                        className={`w-full text-left px-4 py-2.5 rounded-xl text-sm transition-all ${
-                          selectedPrice === range.id
-                            ? 'bg-primary text-primary-foreground font-medium'
-                            : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                        }`}
-                      >
-                        {range.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Mobile Close Button */}
-                <Button 
-                  variant="outline"
-                  className="w-full lg:hidden mt-4"
-                  onClick={() => setShowFilters(false)}
-                >
-                  Apply Filters
-                </Button>
+                )}
               </div>
-            </aside>
+            </div>
+          </div>
 
+          <div className="flex flex-col">
             {/* Services Grid */}
             <div className="flex-1">
-              {/* Sort & Results Header */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-                <p className="text-muted-foreground">
-                  Showing <span className="font-medium text-foreground">{sortedServices.length}</span> services
-                </p>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">Sort by:</span>
-                  <div className="relative">
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
-                      className="appearance-none bg-card border border-border rounded-xl px-4 py-2 pr-10 text-sm font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-                    >
-                      <option value="popular">Most Popular</option>
-                      <option value="rating">Highest Rated</option>
-                      <option value="price-low">Price: Low to High</option>
-                      <option value="price-high">Price: High to Low</option>
-                    </select>
-                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
-                  </div>
-                </div>
-              </div>
 
               {/* Active Filters */}
               {(selectedCategory !== 'all' || selectedPrice !== 'all') && (
