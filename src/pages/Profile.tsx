@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { User, Mail, Phone, MapPin, Camera, Save, ArrowLeft } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -8,33 +8,43 @@ import { Textarea } from '@/components/ui/textarea';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const Profile: React.FC = () => {
-  const { user, isAuthenticated } = useAuth();
+  const { user, profile, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [formData, setFormData] = useState({
-    fullName: user?.name || '',
-    email: user?.email || '',
+    fullName: '',
+    email: '',
     phone: '',
     address: '',
-    city: '',
-    state: '',
-    zipCode: '',
-    bio: '',
   });
   
-  const [avatar, setAvatar] = useState<string>(user?.avatar || '');
+  const [avatar, setAvatar] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
   // Redirect if not authenticated
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isAuthenticated) {
       navigate('/auth');
     }
   }, [isAuthenticated, navigate]);
+
+  // Load profile data
+  useEffect(() => {
+    if (profile) {
+      setFormData({
+        fullName: profile.full_name || '',
+        email: profile.email || '',
+        phone: profile.phone || '',
+        address: profile.address || '',
+      });
+      setAvatar(profile.avatar_url || '');
+    }
+  }, [profile]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -58,17 +68,36 @@ const Profile: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) return;
+    
     setIsLoading(true);
     
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    toast({
-      title: "Profile Updated",
-      description: "Your profile information has been saved successfully.",
-    });
-    
-    setIsLoading(false);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          full_name: formData.fullName,
+          phone: formData.phone,
+          address: formData.address,
+          avatar_url: avatar,
+        })
+        .eq('id', user.id);
+
+      if (error) throw error;
+      
+      toast({
+        title: "Profile Updated",
+        description: "Your profile information has been saved successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to update profile. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (!isAuthenticated) {
@@ -170,10 +199,10 @@ const Profile: React.FC = () => {
                     name="email"
                     type="email"
                     value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="Enter your email"
-                    className="input-modern"
+                    disabled
+                    className="input-modern opacity-60"
                   />
+                  <p className="text-xs text-muted-foreground">Email cannot be changed</p>
                 </div>
                 
                 <div className="space-y-2">
@@ -200,76 +229,17 @@ const Profile: React.FC = () => {
                 <MapPin className="w-5 h-5 text-muted-foreground" />
                 Address
               </h2>
-              <div className="grid gap-6">
-                <div className="space-y-2">
-                  <Label htmlFor="address">Street Address</Label>
-                  <Input
-                    id="address"
-                    name="address"
-                    value={formData.address}
-                    onChange={handleInputChange}
-                    placeholder="Enter your street address"
-                    className="input-modern"
-                  />
-                </div>
-                
-                <div className="grid gap-6 md:grid-cols-3">
-                  <div className="space-y-2">
-                    <Label htmlFor="city">City</Label>
-                    <Input
-                      id="city"
-                      name="city"
-                      value={formData.city}
-                      onChange={handleInputChange}
-                      placeholder="City"
-                      className="input-modern"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="state">State</Label>
-                    <Input
-                      id="state"
-                      name="state"
-                      value={formData.state}
-                      onChange={handleInputChange}
-                      placeholder="State"
-                      className="input-modern"
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="zipCode">ZIP Code</Label>
-                    <Input
-                      id="zipCode"
-                      name="zipCode"
-                      value={formData.zipCode}
-                      onChange={handleInputChange}
-                      placeholder="ZIP"
-                      className="input-modern"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Bio */}
-            <div className="bg-card border border-border rounded-2xl p-6">
-              <h2 className="font-semibold text-foreground text-lg mb-4">About Me</h2>
               <div className="space-y-2">
-                <Label htmlFor="bio">Bio</Label>
+                <Label htmlFor="address">Full Address</Label>
                 <Textarea
-                  id="bio"
-                  name="bio"
-                  value={formData.bio}
+                  id="address"
+                  name="address"
+                  value={formData.address}
                   onChange={handleInputChange}
-                  placeholder="Tell us a little about yourself..."
-                  rows={4}
+                  placeholder="Enter your full address"
                   className="input-modern resize-none"
+                  rows={3}
                 />
-                <p className="text-sm text-muted-foreground">
-                  Brief description for your profile. Max 300 characters.
-                </p>
               </div>
             </div>
 

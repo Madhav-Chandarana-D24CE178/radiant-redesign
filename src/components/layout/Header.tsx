@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Bell, User, Sun, Moon, AlertTriangle, LogOut, Settings } from 'lucide-react';
+import { Menu, X, Bell, User as UserIcon, Sun, Moon, AlertTriangle, LogOut, Settings, LayoutDashboard } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -26,9 +26,17 @@ const Header: React.FC = () => {
   ]);
   const location = useLocation();
   const { theme, toggleTheme } = useTheme();
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, profile, isAuthenticated, logout, getPrimaryRole } = useAuth();
 
   const unreadCount = notifications.filter(n => n.unread).length;
+  
+  const getDashboardPath = () => {
+    const role = getPrimaryRole();
+    if (role === 'admin') return '/admin/dashboard';
+    if (role === 'service_provider') return '/provider/dashboard';
+    return '/user/dashboard';
+  };
+
 
   // Close notifications on outside click
   useEffect(() => {
@@ -173,11 +181,11 @@ const Header: React.FC = () => {
                   className="rounded-full"
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                 >
-                  {user?.avatar ? (
-                    <img src={user.avatar} alt={user.name} className="w-8 h-8 rounded-full object-cover" />
+                  {profile?.avatar_url ? (
+                    <img src={profile.avatar_url} alt={profile.full_name || ''} className="w-8 h-8 rounded-full object-cover" />
                   ) : (
                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                      <User className="w-4 h-4 text-primary" />
+                      <UserIcon className="w-4 h-4 text-primary" />
                     </div>
                   )}
                 </Button>
@@ -191,15 +199,23 @@ const Header: React.FC = () => {
                   }`}
                 >
                   <div className="px-4 py-3 border-b border-border bg-popover">
-                    <p className="font-semibold text-foreground">{user?.name}</p>
+                    <p className="font-semibold text-foreground">{profile?.full_name || user?.email}</p>
                     <p className="text-sm text-muted-foreground">{user?.email}</p>
                   </div>
+                  <Link 
+                    to={getDashboardPath()} 
+                    className="flex items-center gap-2 px-4 py-2.5 hover:bg-muted transition-colors cursor-pointer"
+                    onClick={() => setIsProfileOpen(false)}
+                  >
+                    <LayoutDashboard className="w-4 h-4" />
+                    <span className="text-sm">Dashboard</span>
+                  </Link>
                   <Link 
                     to="/profile" 
                     className="flex items-center gap-2 px-4 py-2.5 hover:bg-muted transition-colors cursor-pointer"
                     onClick={() => setIsProfileOpen(false)}
                   >
-                    <User className="w-4 h-4" />
+                    <UserIcon className="w-4 h-4" />
                     <span className="text-sm">Profile</span>
                   </Link>
                   <button 
