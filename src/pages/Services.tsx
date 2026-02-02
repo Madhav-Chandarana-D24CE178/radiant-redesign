@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Search, Filter, Star, MapPin, Clock, Shield, ChevronDown, X } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
 
 const serviceCategories = [
   { id: 'all', name: 'All Services' },
