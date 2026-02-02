@@ -386,7 +386,7 @@ const Index: React.FC = () => {
               </Button>
             </Link>
             <Link to="/auth">
-              <Button variant="outline" size="xl" className="border-white text-white hover:bg-white/10 gap-2">
+              <Button variant="ghost" size="xl" className="border-2 border-white text-white hover:bg-white/20 gap-2">
                 Join as Provider
               </Button>
             </Link>
