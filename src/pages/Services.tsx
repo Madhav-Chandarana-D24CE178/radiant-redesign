@@ -328,7 +328,7 @@ const Services: React.FC = () => {
                     <div className="pt-4">
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <h3 className="font-semibold text-foreground text-lg leading-tight">{service.name}</h3>
-                        <span className="font-bold text-primary text-lg">${service.price}</span>
+                        <span className="font-bold text-primary text-lg">₹{service.price.toLocaleString('en-IN')}</span>
                       </div>
                       <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{service.description}</p>
                       <div className="flex items-center justify-between text-sm">
