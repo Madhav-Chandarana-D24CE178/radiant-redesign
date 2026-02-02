@@ -34,26 +34,34 @@ const Footer: React.FC = () => {
               Your trusted platform for finding skilled professionals for all your home service needs. Quality work, guaranteed satisfaction.
             </p>
             <div className="flex gap-3">
-              <a 
-                href="#" 
+              <a
+                href="https://facebook.com/HandyFix"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
               >
                 <Facebook className="w-5 h-5" />
               </a>
-              <a 
-                href="#" 
+              <a
+                href="https://twitter.com/HandyFix"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
               >
                 <Twitter className="w-5 h-5" />
               </a>
-              <a 
-                href="#" 
+              <a
+                href="https://instagram.com/HandyFix"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
               >
                 <Instagram className="w-5 h-5" />
               </a>
-              <a 
-                href="#" 
+              <a
+                href="https://linkedin.com/company/HandyFix"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
               >
                 <Linkedin className="w-5 h-5" />
