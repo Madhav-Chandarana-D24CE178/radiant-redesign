@@ -138,7 +138,8 @@ const Services: React.FC = () => {
                          (selectedPrice === 'budget' && service.price < 500) ||
                          (selectedPrice === 'mid' && service.price >= 500 && service.price < 1500) ||
                          (selectedPrice === 'premium' && service.price >= 1500);
-    return matchesSearch && matchesCategory && matchesPrice;
+    const matchesPriceRange = service.price >= priceRange[0] && service.price <= priceRange[1];
+    return matchesSearch && matchesCategory && matchesPrice && matchesPriceRange;
   });
 
   const sortedServices = [...filteredServices].sort((a, b) => {
