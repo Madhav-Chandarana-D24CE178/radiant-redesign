@@ -104,8 +104,19 @@ const stats = [
 ];
 
 const Index: React.FC = () => {
+  const [service, setService] = useState('');
   const [pincode, setPincode] = useState('');
   const [currentTestimonial, setCurrentTestimonial] = useState(0);
+
+  const handleServiceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^a-zA-Z\s]/g, '');
+    setService(value);
+  };
+
+  const handlePincodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
+    setPincode(value);
+  };
 
   const nextTestimonial = () => {
     setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
