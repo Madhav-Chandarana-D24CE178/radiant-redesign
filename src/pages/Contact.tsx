@@ -11,29 +11,112 @@ const Contact: React.FC = () => {
     subject: '',
     message: '',
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    // Name validation - alphabets only
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    } else if (!/^[a-zA-Z\s]+$/.test(formData.name)) {
+      newErrors.name = 'Name must contain only alphabets';
+    }
+
+    // Email validation
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    // Phone validation - Indian format
+    if (formData.phone && !/^[6-9]\d{9}$/.test(formData.phone.replace(/[^0-9]/g, ''))) {
+      newErrors.phone = 'Please enter a valid Indian phone number';
+    }
+
+    // Subject validation
+    if (!formData.subject) {
+      newErrors.subject = 'Please select a subject';
+    }
+
+    // Message validation - reasonable character limits
+    if (!formData.message.trim()) {
+      newErrors.message = 'Message is required';
+    } else if (formData.message.length < 10) {
+      newErrors.message = 'Message must be at least 10 characters';
+    } else if (formData.message.length > 1000) {
+      newErrors.message = 'Message cannot exceed 1000 characters';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     setIsSubmitting(true);
-    
+
     // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1500));
-    
+
     setIsSubmitting(false);
     setIsSubmitted(true);
     setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
-    
+    setErrors({});
+
     // Reset success message after 5 seconds
     setTimeout(() => setIsSubmitted(false), 5000);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+    const { name, value } = e.target;
+
+    // Validation for name field - alphabets only
+    if (name === 'name') {
+      const validValue = value.replace(/[^a-zA-Z\s]/g, '');
+      setFormData(prev => ({
+        ...prev,
+        [name]: validValue
+      }));
+    }
+    // Validation for phone field - numbers only
+    else if (name === 'phone') {
+      const validValue = value.replace(/[^0-9+\s()-]/g, '');
+      setFormData(prev => ({
+        ...prev,
+        [name]: validValue
+      }));
+    }
+    // Validation for message - character limit check
+    else if (name === 'message' && value.length <= 1000) {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+    // Other fields
+    else if (name !== 'message') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
   };
 
   return (
