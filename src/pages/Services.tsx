@@ -172,14 +172,6 @@ const Services: React.FC = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-12 pr-4 py-4 rounded-2xl bg-card border border-border shadow-lg focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary text-foreground placeholder:text-muted-foreground"
               />
-              <Button 
-                variant="ghost"
-                size="icon"
-                className="absolute right-2 top-1/2 -translate-y-1/2 md:hidden"
-                onClick={() => setShowFilters(!showFilters)}
-              >
-                <Filter className="w-5 h-5" />
-              </Button>
             </div>
           </div>
         </div>
@@ -195,7 +187,7 @@ const Services: React.FC = () => {
                 Showing <span className="font-medium text-foreground">{sortedServices.length}</span> services
               </p>
               <div className="flex flex-wrap items-center gap-2">
-                {/* Category Filter Dropdown */}
+                {/* Filters Dropdown */}
                 <div className="relative">
                   <button
                     onClick={() => setShowFilters(!showFilters)}
@@ -297,69 +289,62 @@ const Services: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex flex-col">
-            {/* Services Grid */}
-            <div className="flex-1">
-
-
-              {/* Services Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                {sortedServices.map((service, index) => (
-                  <div 
-                    key={service.id} 
-                    className="service-card animate-fade-up"
-                    style={{ animationDelay: `${index * 0.05}s` }}
-                  >
-                    <div className="relative">
-                      <img 
-                        src={service.image} 
-                        alt={service.name}
-                        className="w-full h-48 object-cover rounded-xl"
-                      />
-                      {service.popular && (
-                        <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-medium">
-                          Popular
-                        </div>
-                      )}
+          {/* Services Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {sortedServices.map((service, index) => (
+              <div 
+                key={service.id} 
+                className="service-card animate-fade-up"
+                style={{ animationDelay: `${index * 0.05}s` }}
+              >
+                <div className="relative">
+                  <img 
+                    src={service.image} 
+                    alt={service.name}
+                    className="w-full h-48 object-cover rounded-xl"
+                  />
+                  {service.popular && (
+                    <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-medium">
+                      Popular
                     </div>
-                    <div className="pt-4">
-                      <div className="flex items-start justify-between gap-2 mb-2">
-                        <h3 className="font-semibold text-foreground text-lg leading-tight">{service.name}</h3>
-                        <span className="font-bold text-primary text-lg">₹{service.price.toLocaleString('en-IN')}</span>
-                      </div>
-                      <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{service.description}</p>
-                      <div className="flex items-center justify-between text-sm">
-                        <div className="flex items-center gap-3">
-                          <span className="flex items-center gap-1 text-foreground">
-                            <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                            {service.rating}
-                          </span>
-                          <span className="text-muted-foreground">({service.reviews})</span>
-                        </div>
-                        <span className="flex items-center gap-1 text-muted-foreground">
-                          <Clock className="w-4 h-4" />
-                          {service.duration}
-                        </span>
-                      </div>
-                      <Button variant="default" className="w-full mt-4">
-                        Book Now
-                      </Button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {sortedServices.length === 0 && (
-                <div className="text-center py-16">
-                  <div className="w-20 h-20 mx-auto rounded-full bg-muted flex items-center justify-center mb-4">
-                    <Search className="w-8 h-8 text-muted-foreground" />
-                  </div>
-                  <h3 className="font-semibold text-foreground text-xl mb-2">No services found</h3>
-                  <p className="text-muted-foreground">Try adjusting your filters or search query.</p>
+                  )}
                 </div>
-              )}
-            </div>
+                <div className="pt-4">
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <h3 className="font-semibold text-foreground text-lg leading-tight">{service.name}</h3>
+                    <span className="font-bold text-primary text-lg">₹{service.price.toLocaleString('en-IN')}</span>
+                  </div>
+                  <p className="text-muted-foreground text-sm mb-4 line-clamp-2">{service.description}</p>
+                  <div className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-3">
+                      <span className="flex items-center gap-1 text-foreground">
+                        <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                        {service.rating}
+                      </span>
+                      <span className="text-muted-foreground">({service.reviews})</span>
+                    </div>
+                    <span className="flex items-center gap-1 text-muted-foreground">
+                      <Clock className="w-4 h-4" />
+                      {service.duration}
+                    </span>
+                  </div>
+                  <Button variant="default" className="w-full mt-4">
+                    Book Now
+                  </Button>
+                </div>
+              </div>
+            ))}
           </div>
+
+          {sortedServices.length === 0 && (
+            <div className="text-center py-16">
+              <div className="w-20 h-20 mx-auto rounded-full bg-muted flex items-center justify-center mb-4">
+                <Search className="w-8 h-8 text-muted-foreground" />
+              </div>
+              <h3 className="font-semibold text-foreground text-xl mb-2">No services found</h3>
+              <p className="text-muted-foreground">Try adjusting your filters or search query.</p>
+            </div>
+          )}
         </div>
       </section>
     </Layout>
