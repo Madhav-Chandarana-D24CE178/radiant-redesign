@@ -232,13 +232,50 @@ const Services: React.FC = () => {
                         <div className="flex items-center justify-between mb-3">
                           <h4 className="font-semibold text-foreground">Price Range</h4>
                           <button
-                            onClick={() => setSelectedPrice('all')}
+                            onClick={() => {
+                              setPriceRange([100, 5000]);
+                              setSelectedPrice('all');
+                            }}
                             className="text-xs text-primary hover:text-primary/80"
                           >
-                            Clear
+                            Reset
                           </button>
                         </div>
-                        <div className="space-y-2">
+
+                        {/* Price Slider */}
+                        <div className="space-y-3">
+                          <Slider
+                            min={100}
+                            max={5000}
+                            step={100}
+                            value={priceRange}
+                            onValueChange={setPriceRange}
+                            className="w-full"
+                          />
+                          <div className="flex items-center justify-between text-sm">
+                            <div className="flex items-center gap-2">
+                              <span className="text-muted-foreground">₹</span>
+                              <input
+                                type="number"
+                                value={priceRange[0]}
+                                onChange={(e) => setPriceRange([Math.max(100, parseInt(e.target.value) || 100), priceRange[1]])}
+                                className="w-16 px-2 py-1 rounded bg-muted border border-border text-foreground text-sm"
+                              />
+                            </div>
+                            <span className="text-muted-foreground">to</span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-muted-foreground">₹</span>
+                              <input
+                                type="number"
+                                value={priceRange[1]}
+                                onChange={(e) => setPriceRange([priceRange[0], Math.min(5000, parseInt(e.target.value) || 5000)])}
+                                className="w-16 px-2 py-1 rounded bg-muted border border-border text-foreground text-sm"
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2 mt-4">
                           {priceRanges.map((range) => (
                             <button
                               key={range.id}
