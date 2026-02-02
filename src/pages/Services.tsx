@@ -17,9 +17,9 @@ const serviceCategories = [
 
 const priceRanges = [
   { id: 'all', label: 'All Prices' },
-  { id: 'budget', label: 'Under $50' },
-  { id: 'mid', label: '$50 - $100' },
-  { id: 'premium', label: '$100+' },
+  { id: 'budget', label: 'Under ₹500' },
+  { id: 'mid', label: '₹500 - ₹1500' },
+  { id: 'premium', label: '₹1500+' },
 ];
 
 const services = [
