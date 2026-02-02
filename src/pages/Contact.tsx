@@ -11,29 +11,112 @@ const Contact: React.FC = () => {
     subject: '',
     message: '',
   });
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+
+    // Name validation - alphabets only
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required';
+    } else if (!/^[a-zA-Z\s]+$/.test(formData.name)) {
+      newErrors.name = 'Name must contain only alphabets';
+    }
+
+    // Email validation
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    // Phone validation - Indian format
+    if (formData.phone && !/^[6-9]\d{9}$/.test(formData.phone.replace(/[^0-9]/g, ''))) {
+      newErrors.phone = 'Please enter a valid Indian phone number';
+    }
+
+    // Subject validation
+    if (!formData.subject) {
+      newErrors.subject = 'Please select a subject';
+    }
+
+    // Message validation - reasonable character limits
+    if (!formData.message.trim()) {
+      newErrors.message = 'Message is required';
+    } else if (formData.message.length < 10) {
+      newErrors.message = 'Message must be at least 10 characters';
+    } else if (formData.message.length > 1000) {
+      newErrors.message = 'Message cannot exceed 1000 characters';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     setIsSubmitting(true);
-    
+
     // Simulate form submission
     await new Promise(resolve => setTimeout(resolve, 1500));
-    
+
     setIsSubmitting(false);
     setIsSubmitted(true);
     setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
-    
+    setErrors({});
+
     // Reset success message after 5 seconds
     setTimeout(() => setIsSubmitted(false), 5000);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+    const { name, value } = e.target;
+
+    // Validation for name field - alphabets only
+    if (name === 'name') {
+      const validValue = value.replace(/[^a-zA-Z\s]/g, '');
+      setFormData(prev => ({
+        ...prev,
+        [name]: validValue
+      }));
+    }
+    // Validation for phone field - numbers only
+    else if (name === 'phone') {
+      const validValue = value.replace(/[^0-9+\s()-]/g, '');
+      setFormData(prev => ({
+        ...prev,
+        [name]: validValue
+      }));
+    }
+    // Validation for message - character limit check
+    else if (name === 'message' && value.length <= 1000) {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+    // Other fields
+    else if (name !== 'message') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+
+    // Clear error for this field when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
   };
 
   return (
@@ -87,8 +170,8 @@ const Contact: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">Phone</h3>
-                    <a href="tel:+1234567890" className="text-muted-foreground hover:text-primary transition-colors">
-                      +1 (234) 567-890
+                    <a href="tel:+919876543210" className="text-muted-foreground hover:text-primary transition-colors">
+                      +91 98765 43210
                     </a>
                   </div>
                 </div>
@@ -100,9 +183,9 @@ const Contact: React.FC = () => {
                   <div>
                     <h3 className="font-semibold text-foreground mb-1">Address</h3>
                     <p className="text-muted-foreground">
-                      123 Service Street<br />
-                      Business District<br />
-                      City, State 12345
+                      Bandra<br />
+                      Mumbai 400050<br />
+                      Maharashtra, India
                     </p>
                   </div>
                 </div>
@@ -147,7 +230,7 @@ const Contact: React.FC = () => {
                   <div className="grid sm:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
-                        Full Name *
+                        Full Name * (alphabets only)
                       </label>
                       <input
                         type="text"
@@ -156,8 +239,9 @@ const Contact: React.FC = () => {
                         onChange={handleChange}
                         placeholder="John Doe"
                         required
-                        className="input-modern"
+                        className={`input-modern ${errors.name ? 'border-destructive ring-destructive/50' : ''}`}
                       />
+                      {errors.name && <p className="text-xs text-destructive mt-1">{errors.name}</p>}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
@@ -170,24 +254,26 @@ const Contact: React.FC = () => {
                         onChange={handleChange}
                         placeholder="you@example.com"
                         required
-                        className="input-modern"
+                        className={`input-modern ${errors.email ? 'border-destructive ring-destructive/50' : ''}`}
                       />
+                      {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
                     </div>
                   </div>
 
                   <div className="grid sm:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
-                        Phone Number
+                        Phone Number (Indian format)
                       </label>
                       <input
                         type="tel"
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        placeholder="+1 (234) 567-890"
-                        className="input-modern"
+                        placeholder="+91 98765 43210"
+                        className={`input-modern ${errors.phone ? 'border-destructive ring-destructive/50' : ''}`}
                       />
+                      {errors.phone && <p className="text-xs text-destructive mt-1">{errors.phone}</p>}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
@@ -198,7 +284,7 @@ const Contact: React.FC = () => {
                         value={formData.subject}
                         onChange={handleChange}
                         required
-                        className="input-modern appearance-none"
+                        className={`input-modern appearance-none ${errors.subject ? 'border-destructive ring-destructive/50' : ''}`}
                       >
                         <option value="">Select a topic</option>
                         <option value="general">General Inquiry</option>
@@ -208,22 +294,24 @@ const Contact: React.FC = () => {
                         <option value="complaint">Complaint</option>
                         <option value="other">Other</option>
                       </select>
+                      {errors.subject && <p className="text-xs text-destructive mt-1">{errors.subject}</p>}
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
-                      Message *
+                      Message * ({formData.message.length}/1000)
                     </label>
                     <textarea
                       name="message"
                       value={formData.message}
                       onChange={handleChange}
-                      placeholder="Tell us how we can help..."
+                      placeholder="Tell us how we can help... (10-1000 characters)"
                       required
                       rows={6}
-                      className="input-modern resize-none"
+                      className={`input-modern resize-none ${errors.message ? 'border-destructive ring-destructive/50' : ''}`}
                     />
+                    {errors.message && <p className="text-xs text-destructive mt-1">{errors.message}</p>}
                   </div>
 
                   <Button 
@@ -257,14 +345,14 @@ const Contact: React.FC = () => {
         <div className="container mx-auto px-4">
           <div className="rounded-2xl overflow-hidden border border-border">
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.182919579696!2d-73.98823492346988!3d40.75889097138682!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1699999999999!5m2!1sen!2sus"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3771.0937872231597!2d72.82652!3d19.05975!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7ca6e0000000d%3A0x0!2sBandra%2C%20Mumbai%2C%20Maharashtra%2C%20India!5e0!3m2!1sen!2sin!4v1699999999999!5m2!1sen!2sin"
               width="100%"
               height="400"
               style={{ border: 0 }}
               allowFullScreen
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
-              title="HandyFix Location"
+              title="HandyFix Location in Mumbai"
             />
           </div>
         </div>

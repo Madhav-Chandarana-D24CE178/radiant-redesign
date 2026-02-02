@@ -171,9 +171,10 @@ const Header: React.FC = () => {
 
             {/* User Menu / Auth - Custom dropdown with auto-close on mouse leave */}
             {isAuthenticated ? (
-              <div 
+              <div
                 className="relative"
-                onMouseLeave={() => setIsProfileOpen(false)}
+                onMouseLeave={() => setTimeout(() => setIsProfileOpen(false), 200)}
+                onMouseEnter={() => setIsProfileOpen(true)}
               >
                 <Button 
                   variant="ghost" 
@@ -191,12 +192,14 @@ const Header: React.FC = () => {
                 </Button>
                 
                 {/* Profile Dropdown Panel */}
-                <div 
+                <div
                   className={`absolute right-0 top-full mt-2 w-56 bg-popover border border-border rounded-xl shadow-xl z-50 overflow-hidden transition-all duration-200 ease-out origin-top-right ${
-                    isProfileOpen 
-                      ? 'opacity-100 scale-100 translate-y-0 visible' 
+                    isProfileOpen
+                      ? 'opacity-100 scale-100 translate-y-0 visible'
                       : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'
                   }`}
+                  onMouseEnter={() => setIsProfileOpen(true)}
+                  onMouseLeave={() => setTimeout(() => setIsProfileOpen(false), 200)}
                 >
                   <div className="px-4 py-3 border-b border-border bg-popover">
                     <p className="font-semibold text-foreground">{profile?.full_name || user?.email}</p>
@@ -218,19 +221,12 @@ const Header: React.FC = () => {
                     <UserIcon className="w-4 h-4" />
                     <span className="text-sm">Profile</span>
                   </Link>
-                  <button 
+                  <button
                     className="w-full flex items-center gap-2 px-4 py-2.5 hover:bg-muted transition-colors cursor-pointer text-left"
                     onClick={() => { setIsProfileOpen(false); }}
                   >
                     <Settings className="w-4 h-4" />
                     <span className="text-sm">Settings</span>
-                  </button>
-                  <button 
-                    className="w-full flex items-center gap-2 px-4 py-2.5 hover:bg-muted transition-colors cursor-pointer text-left"
-                    onClick={() => { toggleTheme(); setIsProfileOpen(false); }}
-                  >
-                    {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-                    <span className="text-sm">{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
                   </button>
                   <div className="border-t border-border">
                     <button 
