@@ -230,7 +230,7 @@ const Contact: React.FC = () => {
                   <div className="grid sm:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
-                        Full Name *
+                        Full Name * (alphabets only)
                       </label>
                       <input
                         type="text"
@@ -239,8 +239,9 @@ const Contact: React.FC = () => {
                         onChange={handleChange}
                         placeholder="John Doe"
                         required
-                        className="input-modern"
+                        className={`input-modern ${errors.name ? 'border-destructive ring-destructive/50' : ''}`}
                       />
+                      {errors.name && <p className="text-xs text-destructive mt-1">{errors.name}</p>}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
@@ -253,15 +254,16 @@ const Contact: React.FC = () => {
                         onChange={handleChange}
                         placeholder="you@example.com"
                         required
-                        className="input-modern"
+                        className={`input-modern ${errors.email ? 'border-destructive ring-destructive/50' : ''}`}
                       />
+                      {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
                     </div>
                   </div>
 
                   <div className="grid sm:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
-                        Phone Number
+                        Phone Number (Indian format)
                       </label>
                       <input
                         type="tel"
@@ -269,8 +271,9 @@ const Contact: React.FC = () => {
                         value={formData.phone}
                         onChange={handleChange}
                         placeholder="+91 98765 43210"
-                        className="input-modern"
+                        className={`input-modern ${errors.phone ? 'border-destructive ring-destructive/50' : ''}`}
                       />
+                      {errors.phone && <p className="text-xs text-destructive mt-1">{errors.phone}</p>}
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-foreground mb-2">
@@ -281,7 +284,7 @@ const Contact: React.FC = () => {
                         value={formData.subject}
                         onChange={handleChange}
                         required
-                        className="input-modern appearance-none"
+                        className={`input-modern appearance-none ${errors.subject ? 'border-destructive ring-destructive/50' : ''}`}
                       >
                         <option value="">Select a topic</option>
                         <option value="general">General Inquiry</option>
@@ -291,22 +294,24 @@ const Contact: React.FC = () => {
                         <option value="complaint">Complaint</option>
                         <option value="other">Other</option>
                       </select>
+                      {errors.subject && <p className="text-xs text-destructive mt-1">{errors.subject}</p>}
                     </div>
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-foreground mb-2">
-                      Message *
+                      Message * ({formData.message.length}/1000)
                     </label>
                     <textarea
                       name="message"
                       value={formData.message}
                       onChange={handleChange}
-                      placeholder="Tell us how we can help..."
+                      placeholder="Tell us how we can help... (10-1000 characters)"
                       required
                       rows={6}
-                      className="input-modern resize-none"
+                      className={`input-modern resize-none ${errors.message ? 'border-destructive ring-destructive/50' : ''}`}
                     />
+                    {errors.message && <p className="text-xs text-destructive mt-1">{errors.message}</p>}
                   </div>
 
                   <Button 
