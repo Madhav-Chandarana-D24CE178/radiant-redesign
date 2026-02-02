@@ -301,27 +301,6 @@ const Services: React.FC = () => {
             {/* Services Grid */}
             <div className="flex-1">
 
-              {/* Active Filters */}
-              {(selectedCategory !== 'all' || selectedPrice !== 'all') && (
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {selectedCategory !== 'all' && (
-                    <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm">
-                      {serviceCategories.find(c => c.id === selectedCategory)?.name}
-                      <button onClick={() => setSelectedCategory('all')}>
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
-                  )}
-                  {selectedPrice !== 'all' && (
-                    <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-sm">
-                      {priceRanges.find(p => p.id === selectedPrice)?.label}
-                      <button onClick={() => setSelectedPrice('all')}>
-                        <X className="w-3 h-3" />
-                      </button>
-                    </span>
-                  )}
-                </div>
-              )}
 
               {/* Services Grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
