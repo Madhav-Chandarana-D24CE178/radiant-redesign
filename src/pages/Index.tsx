@@ -148,29 +148,42 @@ const Index: React.FC = () => {
 
             {/* Search Box */}
             <div className="max-w-2xl mx-auto animate-fade-up" style={{ animationDelay: '0.3s' }}>
-              <div className="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-card border border-border shadow-xl">
-                <div className="flex-1 relative">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <input
-                    type="text"
-                    placeholder="What service do you need?"
-                    className="w-full pl-12 pr-4 py-3 rounded-xl bg-muted border-0 focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground placeholder:text-muted-foreground"
-                  />
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-col sm:flex-row gap-4 p-4 rounded-2xl bg-card border border-border shadow-xl">
+                  <div className="flex-1 relative">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <input
+                      type="text"
+                      placeholder="What service do you need? (alphabets only)"
+                      value={service}
+                      onChange={handleServiceChange}
+                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-muted border-0 focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground placeholder:text-muted-foreground"
+                    />
+                  </div>
+                  <div className="flex-1 relative">
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+                    <input
+                      type="text"
+                      placeholder="Enter pincode (6 digits)"
+                      value={pincode}
+                      onChange={handlePincodeChange}
+                      maxLength={6}
+                      className="w-full pl-12 pr-4 py-3 rounded-xl bg-muted border-0 focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground placeholder:text-muted-foreground"
+                    />
+                  </div>
+                  <Button
+                    variant="hero"
+                    size="lg"
+                    className="gap-2"
+                    disabled={pincode.length !== 6}
+                  >
+                    Search
+                    <ArrowRight className="w-5 h-5" />
+                  </Button>
                 </div>
-                <div className="flex-1 relative">
-                  <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-                  <input
-                    type="text"
-                    placeholder="Enter pincode"
-                    value={pincode}
-                    onChange={(e) => setPincode(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 rounded-xl bg-muted border-0 focus:outline-none focus:ring-2 focus:ring-primary/50 text-foreground placeholder:text-muted-foreground"
-                  />
-                </div>
-                <Button variant="hero" size="lg" className="gap-2">
-                  Search
-                  <ArrowRight className="w-5 h-5" />
-                </Button>
+                {pincode && pincode.length !== 6 && (
+                  <p className="text-xs text-destructive">Pincode must be exactly 6 digits</p>
+                )}
               </div>
             </div>
 
