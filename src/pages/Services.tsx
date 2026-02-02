@@ -133,9 +133,9 @@ const Services: React.FC = () => {
                           service.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'all' || service.category === selectedCategory;
     const matchesPrice = selectedPrice === 'all' ||
-                         (selectedPrice === 'budget' && service.price < 50) ||
-                         (selectedPrice === 'mid' && service.price >= 50 && service.price < 100) ||
-                         (selectedPrice === 'premium' && service.price >= 100);
+                         (selectedPrice === 'budget' && service.price < 500) ||
+                         (selectedPrice === 'mid' && service.price >= 500 && service.price < 1500) ||
+                         (selectedPrice === 'premium' && service.price >= 1500);
     return matchesSearch && matchesCategory && matchesPrice;
   });
 
