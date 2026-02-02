@@ -163,9 +163,10 @@ const Header: React.FC = () => {
 
             {/* User Menu / Auth - Custom dropdown with auto-close on mouse leave */}
             {isAuthenticated ? (
-              <div 
+              <div
                 className="relative"
-                onMouseLeave={() => setIsProfileOpen(false)}
+                onMouseLeave={() => setTimeout(() => setIsProfileOpen(false), 200)}
+                onMouseEnter={() => setIsProfileOpen(true)}
               >
                 <Button 
                   variant="ghost" 
