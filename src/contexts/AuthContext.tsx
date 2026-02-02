@@ -1,116 +1,186 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { User, Session } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 
-interface User {
+export type AppRole = 'user' | 'service_provider' | 'admin';
+
+interface Profile {
   id: string;
   email: string;
-  name: string;
-  avatar?: string;
+  full_name: string | null;
+  phone: string | null;
+  address: string | null;
+  avatar_url: string | null;
 }
 
 interface AuthContextType {
   user: User | null;
+  session: Session | null;
+  profile: Profile | null;
+  roles: AppRole[];
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string, rememberMe?: boolean) => Promise<void>;
-  signup: (email: string, password: string, name: string) => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
-  logout: () => void;
+  isGuest: boolean;
+  login: (email: string, password: string) => Promise<{ error: Error | null }>;
+  signup: (email: string, password: string, name: string, role?: AppRole) => Promise<{ error: Error | null }>;
+  loginWithGoogle: () => Promise<{ error: Error | null }>;
+  logout: () => Promise<void>;
+  continueAsGuest: () => void;
+  hasRole: (role: AppRole) => boolean;
+  getPrimaryRole: () => AppRole | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [roles, setRoles] = useState<AppRole[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isGuest, setIsGuest] = useState(false);
 
-  useEffect(() => {
-    // Check for existing session on mount
-    const checkSession = () => {
-      const stored = localStorage.getItem('handyfix-user') || sessionStorage.getItem('handyfix-user');
-      if (stored) {
-        try {
-          setUser(JSON.parse(stored));
-        } catch {
-          localStorage.removeItem('handyfix-user');
-          sessionStorage.removeItem('handyfix-user');
-        }
-      }
-      setIsLoading(false);
-    };
-    
-    checkSession();
-  }, []);
+  const fetchProfile = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single();
 
-  const login = async (email: string, password: string, rememberMe = false) => {
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const newUser: User = {
-      id: crypto.randomUUID(),
-      email,
-      name: email.split('@')[0],
-    };
-    
-    setUser(newUser);
-    
-    if (rememberMe) {
-      localStorage.setItem('handyfix-user', JSON.stringify(newUser));
-    } else {
-      sessionStorage.setItem('handyfix-user', JSON.stringify(newUser));
+    if (!error && data) {
+      setProfile(data as Profile);
     }
-    
-    setIsLoading(false);
   };
 
-  const signup = async (email: string, password: string, name: string) => {
-    setIsLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    const newUser: User = {
-      id: crypto.randomUUID(),
+  const fetchRoles = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId);
+
+    if (!error && data) {
+      setRoles(data.map(r => r.role as AppRole));
+    }
+  };
+
+  useEffect(() => {
+    // Set up auth state listener FIRST
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        setIsGuest(false);
+        
+        // Defer Supabase calls with setTimeout
+        if (session?.user) {
+          setTimeout(() => {
+            fetchProfile(session.user.id);
+            fetchRoles(session.user.id);
+          }, 0);
+        } else {
+          setProfile(null);
+          setRoles([]);
+        }
+      }
+    );
+
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+      
+      if (session?.user) {
+        fetchProfile(session.user.id);
+        fetchRoles(session.user.id);
+      }
+      
+      setIsLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const login = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({
       email,
-      name,
-    };
+      password,
+    });
+    return { error: error as Error | null };
+  };
+
+  const signup = async (email: string, password: string, name: string, role: AppRole = 'user') => {
+    const redirectUrl = `${window.location.origin}/`;
     
-    setUser(newUser);
-    localStorage.setItem('handyfix-user', JSON.stringify(newUser));
-    setIsLoading(false);
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: redirectUrl,
+        data: {
+          full_name: name,
+          requested_role: role,
+        },
+      },
+    });
+
+    // If signup successful and user wants to be a provider, add the role
+    if (!error && data.user && role === 'service_provider') {
+      // Note: This will be handled by admin verification flow
+      // The user gets 'user' role by default from trigger
+    }
+
+    return { error: error as Error | null };
   };
 
   const loginWithGoogle = async () => {
-    setIsLoading(true);
-    // Simulate Google OAuth
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    const newUser: User = {
-      id: crypto.randomUUID(),
-      email: 'user@gmail.com',
-      name: 'Google User',
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop',
-    };
-    
-    setUser(newUser);
-    localStorage.setItem('handyfix-user', JSON.stringify(newUser));
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/`,
+      },
+    });
+    return { error: error as Error | null };
+  };
+
+  const logout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setSession(null);
+    setProfile(null);
+    setRoles([]);
+    setIsGuest(false);
+  };
+
+  const continueAsGuest = () => {
+    setIsGuest(true);
     setIsLoading(false);
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('handyfix-user');
-    sessionStorage.removeItem('handyfix-user');
+  const hasRole = (role: AppRole) => roles.includes(role);
+
+  const getPrimaryRole = (): AppRole | null => {
+    if (roles.includes('admin')) return 'admin';
+    if (roles.includes('service_provider')) return 'service_provider';
+    if (roles.includes('user')) return 'user';
+    return null;
   };
 
   return (
     <AuthContext.Provider value={{
       user,
+      session,
+      profile,
+      roles,
       isAuthenticated: !!user,
       isLoading,
+      isGuest,
       login,
       signup,
       loginWithGoogle,
       logout,
+      continueAsGuest,
+      hasRole,
+      getPrimaryRole,
     }}>
       {children}
     </AuthContext.Provider>
