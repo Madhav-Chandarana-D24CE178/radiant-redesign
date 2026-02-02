@@ -205,19 +205,12 @@ const Header: React.FC = () => {
                     <User className="w-4 h-4" />
                     <span className="text-sm">Profile</span>
                   </Link>
-                  <button 
+                  <button
                     className="w-full flex items-center gap-2 px-4 py-2.5 hover:bg-muted transition-colors cursor-pointer text-left"
                     onClick={() => { setIsProfileOpen(false); }}
                   >
                     <Settings className="w-4 h-4" />
                     <span className="text-sm">Settings</span>
-                  </button>
-                  <button 
-                    className="w-full flex items-center gap-2 px-4 py-2.5 hover:bg-muted transition-colors cursor-pointer text-left"
-                    onClick={() => { toggleTheme(); setIsProfileOpen(false); }}
-                  >
-                    {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-                    <span className="text-sm">{theme === 'light' ? 'Dark Mode' : 'Light Mode'}</span>
                   </button>
                   <div className="border-t border-border">
                     <button 
