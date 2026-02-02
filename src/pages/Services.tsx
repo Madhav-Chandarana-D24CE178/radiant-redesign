@@ -126,6 +126,7 @@ const Services: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedPrice, setSelectedPrice] = useState('all');
+  const [priceRange, setPriceRange] = useState([100, 5000]);
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState('popular');
 
