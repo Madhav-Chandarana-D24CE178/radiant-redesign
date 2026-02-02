@@ -311,13 +311,14 @@ const Services: React.FC = () => {
                 </div>
 
                 {/* Clear All Button */}
-                {(selectedCategory !== 'all' || selectedPrice !== 'all') && (
+                {(selectedCategory !== 'all' || selectedPrice !== 'all' || priceRange[0] !== 100 || priceRange[1] !== 5000) && (
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => {
                       setSelectedCategory('all');
                       setSelectedPrice('all');
+                      setPriceRange([100, 5000]);
                       setShowFilters(false);
                     }}
                     className="text-muted-foreground hover:text-primary"
