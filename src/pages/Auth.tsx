@@ -4,6 +4,7 @@ import { Eye, EyeOff, Mail, Lock, User, ArrowRight, Briefcase, ArrowLeft, Wrench
 import { Button } from '@/components/ui/button';
 import { useAuth, AppRole } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { lovable } from '@/integrations/lovable/index';
 import handyfixLogo from '@/assets/handyfix-logo.png';
 
 type AuthStep = 'role-selection' | 'auth-form';
@@ -85,9 +86,16 @@ const Auth: React.FC = () => {
 
   const handleGoogleLogin = async () => {
     setIsLoading(true);
+    setError('');
     try {
-      const { error } = await loginWithGoogle();
-      if (error) setError('Google login failed. Please try again.');
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
+      });
+      if (result?.error) {
+        setError('Google login failed. Please try again.');
+      }
+    } catch (err) {
+      setError('Google login failed. Please check your popup blocker and try again.');
     } finally {
       setIsLoading(false);
     }
