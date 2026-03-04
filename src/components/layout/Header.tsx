@@ -11,6 +11,7 @@ const Header: React.FC = () => {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
+  const notificationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const profileRef = useRef<HTMLDivElement>(null);
   const profileTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [notifications] = useState([
@@ -75,6 +76,15 @@ const Header: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  const openNotifications = () => {
+    if (notificationTimeoutRef.current) clearTimeout(notificationTimeoutRef.current);
+    setIsNotificationsOpen(true);
+  };
+
+  const closeNotificationsDelayed = () => {
+    notificationTimeoutRef.current = setTimeout(() => setIsNotificationsOpen(false), 300);
+  };
+
   const openProfile = () => {
     if (profileTimeoutRef.current) clearTimeout(profileTimeoutRef.current);
     setIsProfileOpen(true);
@@ -123,7 +133,7 @@ const Header: React.FC = () => {
             </Button>
 
             {isAuthenticated && (
-              <div className="relative" ref={notificationRef} onMouseLeave={() => setTimeout(() => setIsNotificationsOpen(false), 200)}>
+              <div className="relative" ref={notificationRef} onMouseEnter={openNotifications} onMouseLeave={closeNotificationsDelayed}>
                 <Button variant="ghost" size="icon" className="rounded-full relative" onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}>
                   <Bell className="w-5 h-5" />
                   {unreadCount > 0 && <span className="notification-badge">{unreadCount}</span>}
