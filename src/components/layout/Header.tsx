@@ -11,6 +11,8 @@ const Header: React.FC = () => {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
+  const profileTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [notifications] = useState([
     { id: 1, message: 'Your booking is confirmed', time: '5 min ago', unread: true },
     { id: 2, message: 'New provider in your area', time: '1 hour ago', unread: true },
@@ -65,10 +67,22 @@ const Header: React.FC = () => {
       if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
         setIsNotificationsOpen(false);
       }
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setIsProfileOpen(false);
+      }
     };
-    if (isNotificationsOpen) document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isNotificationsOpen]);
+  }, []);
+
+  const openProfile = () => {
+    if (profileTimeoutRef.current) clearTimeout(profileTimeoutRef.current);
+    setIsProfileOpen(true);
+  };
+
+  const closeProfileDelayed = () => {
+    profileTimeoutRef.current = setTimeout(() => setIsProfileOpen(false), 300);
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full glass">
@@ -127,8 +141,8 @@ const Header: React.FC = () => {
             )}
 
             {isAuthenticated ? (
-              <div className="relative" onMouseLeave={() => setTimeout(() => setIsProfileOpen(false), 200)} onMouseEnter={() => setIsProfileOpen(true)}>
-                <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setIsProfileOpen(!isProfileOpen)}>
+              <div className="relative" ref={profileRef} onMouseEnter={openProfile} onMouseLeave={closeProfileDelayed}>
+                <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setIsProfileOpen(prev => !prev)}>
                   {profile?.avatar_url ? (
                     <img src={profile.avatar_url} alt={profile.full_name || ''} className="w-8 h-8 rounded-full object-cover" />
                   ) : (
@@ -137,7 +151,7 @@ const Header: React.FC = () => {
                     </div>
                   )}
                 </Button>
-                <div className={`absolute right-0 top-full mt-2 w-56 bg-popover border border-border rounded-xl shadow-xl z-50 overflow-hidden transition-all duration-200 ease-out origin-top-right ${isProfileOpen ? 'opacity-100 scale-100 translate-y-0 visible' : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'}`} onMouseEnter={() => setIsProfileOpen(true)} onMouseLeave={() => setTimeout(() => setIsProfileOpen(false), 200)}>
+                <div className={`absolute right-0 top-full mt-2 w-56 bg-popover border border-border rounded-xl shadow-xl z-50 overflow-hidden transition-all duration-200 ease-out origin-top-right ${isProfileOpen ? 'opacity-100 scale-100 translate-y-0 visible' : 'opacity-0 scale-95 -translate-y-2 invisible pointer-events-none'}`}>
                   <div className="px-4 py-3 border-b border-border">
                     <p className="font-semibold text-foreground">{profile?.full_name || user?.email}</p>
                     <p className="text-sm text-muted-foreground">{user?.email}</p>
