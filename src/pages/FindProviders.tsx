@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Search, Filter, Star, MapPin, Shield, Clock, ChevronDown, X, Phone, MessageSquare } from 'lucide-react';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
@@ -126,6 +126,27 @@ const FindProviders: React.FC = () => {
   const [selectedAvailability, setSelectedAvailability] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState('rating');
+  const filterRef = useRef<HTMLDivElement>(null);
+  const filterTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
+        setShowFilters(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const openFilters = () => {
+    if (filterTimeoutRef.current) clearTimeout(filterTimeoutRef.current);
+    setShowFilters(true);
+  };
+
+  const closeFiltersDelayed = () => {
+    filterTimeoutRef.current = setTimeout(() => setShowFilters(false), 300);
+  };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[^a-zA-Z\s]/g, '');
@@ -216,7 +237,7 @@ const FindProviders: React.FC = () => {
               </p>
               <div className="flex flex-wrap items-center gap-2">
                 {/* Filters Dropdown */}
-                <div className="relative">
+                <div className="relative" ref={filterRef} onMouseEnter={openFilters} onMouseLeave={closeFiltersDelayed}>
                   <button
                     onClick={() => setShowFilters(!showFilters)}
                     className="flex items-center gap-2 px-4 py-2 rounded-xl bg-card border border-border text-foreground hover:bg-muted transition-colors"
@@ -226,8 +247,7 @@ const FindProviders: React.FC = () => {
                     <ChevronDown className="w-4 h-4" />
                   </button>
 
-                  {showFilters && (
-                    <div className="absolute top-full mt-2 left-0 w-56 bg-card border border-border rounded-xl shadow-lg z-50 p-4">
+                  <div className={`absolute top-full mt-2 left-0 w-56 bg-card border border-border rounded-xl shadow-lg z-50 p-4 transition-all duration-200 ease-out origin-top-left ${showFilters ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible pointer-events-none'}`}>
                       <div className="flex items-center justify-between mb-4">
                         <h4 className="font-semibold text-foreground">Specialization</h4>
                         <button
@@ -280,7 +300,7 @@ const FindProviders: React.FC = () => {
                         </div>
                       </div>
                     </div>
-                  )}
+                
                 </div>
 
                 {/* Sort Dropdown */}
