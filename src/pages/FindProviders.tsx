@@ -126,13 +126,26 @@ const FindProviders: React.FC = () => {
   const [selectedAvailability, setSelectedAvailability] = useState('all');
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState('rating');
+  const [showSort, setShowSort] = useState(false);
   const filterRef = useRef<HTMLDivElement>(null);
   const filterTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sortRef = useRef<HTMLDivElement>(null);
+  const sortTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const sortOptions = [
+    { value: 'rating', label: 'Highest Rated' },
+    { value: 'reviews', label: 'Most Reviews' },
+    { value: 'price-low', label: 'Price: Low to High' },
+    { value: 'price-high', label: 'Price: High to Low' },
+  ];
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (filterRef.current && !filterRef.current.contains(event.target as Node)) {
         setShowFilters(false);
+      }
+      if (sortRef.current && !sortRef.current.contains(event.target as Node)) {
+        setShowSort(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -146,6 +159,15 @@ const FindProviders: React.FC = () => {
 
   const closeFiltersDelayed = () => {
     filterTimeoutRef.current = setTimeout(() => setShowFilters(false), 300);
+  };
+
+  const openSort = () => {
+    if (sortTimeoutRef.current) clearTimeout(sortTimeoutRef.current);
+    setShowSort(true);
+  };
+
+  const closeSortDelayed = () => {
+    sortTimeoutRef.current = setTimeout(() => setShowSort(false), 300);
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -304,18 +326,30 @@ const FindProviders: React.FC = () => {
                 </div>
 
                 {/* Sort Dropdown */}
-                <div className="relative">
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="appearance-none bg-card border border-border rounded-xl px-4 py-2 pr-10 text-sm font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+                <div className="relative" ref={sortRef} onMouseEnter={openSort} onMouseLeave={closeSortDelayed}>
+                  <button
+                    onClick={() => setShowSort(!showSort)}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-card border border-border text-foreground hover:bg-muted transition-colors"
                   >
-                    <option value="rating">Highest Rated</option>
-                    <option value="reviews">Most Reviews</option>
-                    <option value="price-low">Price: Low to High</option>
-                    <option value="price-high">Price: High to Low</option>
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+                    <span className="text-sm font-medium">{sortOptions.find(o => o.value === sortBy)?.label}</span>
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+
+                  <div className={`absolute top-full mt-2 right-0 w-48 bg-card border border-border rounded-xl shadow-lg z-50 p-2 transition-all duration-200 ease-out origin-top-right ${showSort ? 'opacity-100 scale-100 visible' : 'opacity-0 scale-95 invisible pointer-events-none'}`}>
+                    {sortOptions.map((option) => (
+                      <button
+                        key={option.value}
+                        onClick={() => { setSortBy(option.value); setShowSort(false); }}
+                        className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${
+                          sortBy === option.value
+                            ? 'bg-primary text-primary-foreground font-medium'
+                            : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                        }`}
+                      >
+                        {option.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 {/* Clear All Button */}
