@@ -1,8 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Filter, Star, MapPin, Clock, Shield, ChevronDown, X } from 'lucide-react';
+import { motion } from 'framer-motion';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
+import PageTransition from '@/components/animations/PageTransition';
+import ScrollReveal from '@/components/animations/ScrollReveal';
 
 const serviceCategories = [
   { id: 'all', name: 'All Services' },
@@ -200,17 +203,18 @@ const Services: React.FC = () => {
 
   return (
     <Layout>
+      <PageTransition>
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary/5 via-transparent to-accent/5 py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-10">
+          <ScrollReveal className="max-w-3xl mx-auto text-center mb-10">
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
               Browse Our Services
             </h1>
             <p className="text-lg text-muted-foreground">
               Find the perfect service for your home needs from our wide range of professional offerings.
             </p>
-          </div>
+          </ScrollReveal>
 
           {/* Search Bar */}
           <div className="max-w-2xl mx-auto">
@@ -392,16 +396,18 @@ const Services: React.FC = () => {
           {/* Services Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {sortedServices.map((service, index) => (
-              <div 
+              <ScrollReveal 
                 key={service.id} 
-                className="service-card animate-fade-up"
-                style={{ animationDelay: `${index * 0.05}s` }}
+                delay={index * 0.05}
+                duration={0.5}
               >
-                <div className="relative">
-                  <img 
+              <motion.div className="service-card" whileHover={{ y: -6 }} transition={{ duration: 0.3 }}>
+                <div className="relative overflow-hidden rounded-xl">
+                  <motion.img 
                     src={service.image} 
                     alt={service.name}
-                    className="w-full h-48 object-cover rounded-xl"
+                    className="w-full h-48 object-cover"
+                    whileHover={{ scale: 1.05 }} transition={{ duration: 0.4 }}
                   />
                   {service.popular && (
                     <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-medium">
@@ -428,11 +434,14 @@ const Services: React.FC = () => {
                       {service.duration}
                     </span>
                   </div>
-                  <Button variant="default" className="w-full mt-4">
-                    Book Now
-                  </Button>
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                    <Button variant="default" className="w-full mt-4">
+                      Book Now
+                    </Button>
+                  </motion.div>
                 </div>
-              </div>
+              </motion.div>
+              </ScrollReveal>
             ))}
           </div>
 
@@ -447,6 +456,7 @@ const Services: React.FC = () => {
           )}
         </div>
       </section>
+      </PageTransition>
     </Layout>
   );
 };

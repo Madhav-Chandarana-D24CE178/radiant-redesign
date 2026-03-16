@@ -1,23 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Facebook, 
-  Twitter, 
-  Instagram, 
-  Linkedin, 
-  Mail, 
-  Phone, 
-  MapPin,
-  ArrowRight
-} from 'lucide-react';
+import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import handyfixLogo from '@/assets/handyfix-logo.png';
+import ScrollReveal from '@/components/animations/ScrollReveal';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
 
   return (
     <footer className="footer-section">
+      <ScrollReveal>
       <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Brand Section */}
@@ -34,38 +28,18 @@ const Footer: React.FC = () => {
               Your trusted platform for finding skilled professionals for all your home service needs. Quality work, guaranteed satisfaction.
             </p>
             <div className="flex gap-3">
-              <a
-                href="https://facebook.com/HandyFix"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-              >
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a
-                href="https://twitter.com/HandyFix"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-              >
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a
-                href="https://instagram.com/HandyFix"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-              >
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a
-                href="https://linkedin.com/company/HandyFix"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-              >
-                <Linkedin className="w-5 h-5" />
-              </a>
+              {[
+                { href: 'https://facebook.com/HandyFix', icon: Facebook },
+                { href: 'https://twitter.com/HandyFix', icon: Twitter },
+                { href: 'https://instagram.com/HandyFix', icon: Instagram },
+                { href: 'https://linkedin.com/company/HandyFix', icon: Linkedin },
+              ].map((social) => (
+                <motion.a key={social.href} href={social.href} target="_blank" rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors duration-300"
+                  whileHover={{ scale: 1.15, y: -3 }} whileTap={{ scale: 0.95 }} transition={{ type: 'spring', stiffness: 300 }}>
+                  <social.icon className="w-5 h-5" />
+                </motion.a>
+              ))}
             </div>
           </div>
 
@@ -150,6 +124,7 @@ const Footer: React.FC = () => {
           </div>
         </div>
       </div>
+      </ScrollReveal>
     </footer>
   );
 };

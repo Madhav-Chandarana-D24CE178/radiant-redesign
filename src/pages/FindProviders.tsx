@@ -1,7 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Filter, Star, MapPin, Shield, Clock, ChevronDown, X, Phone, MessageSquare } from 'lucide-react';
+import { motion } from 'framer-motion';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
+import PageTransition from '@/components/animations/PageTransition';
+import ScrollReveal from '@/components/animations/ScrollReveal';
 
 const specializations = [
   { id: 'all', name: 'All Specializations' },
@@ -199,17 +202,18 @@ const FindProviders: React.FC = () => {
 
   return (
     <Layout>
+      <PageTransition>
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary/5 via-transparent to-accent/5 py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-10">
+          <ScrollReveal className="max-w-3xl mx-auto text-center mb-10">
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
               Find Service Providers
             </h1>
             <p className="text-lg text-muted-foreground">
               Connect with verified professionals in your area ready to help with your projects.
             </p>
-          </div>
+          </ScrollReveal>
 
           {/* Search Bar */}
           <div className="max-w-3xl mx-auto">
@@ -374,11 +378,8 @@ const FindProviders: React.FC = () => {
           {/* Providers List */}
           <div className="space-y-4">
             {sortedProviders.map((provider, index) => (
-              <div 
-                key={provider.id} 
-                className="provider-card p-6 animate-fade-up"
-                style={{ animationDelay: `${index * 0.05}s` }}
-              >
+              <ScrollReveal key={provider.id} delay={index * 0.05} duration={0.5}>
+              <motion.div className="provider-card p-6" whileHover={{ y: -4 }} transition={{ duration: 0.3 }}>
                 <div className="flex flex-col md:flex-row gap-6">
                   {/* Image */}
                   <div className="flex-shrink-0">
@@ -459,7 +460,8 @@ const FindProviders: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
+              </ScrollReveal>
             ))}
           </div>
 
@@ -474,6 +476,7 @@ const FindProviders: React.FC = () => {
           )}
         </div>
       </section>
+      </PageTransition>
     </Layout>
   );
 };
