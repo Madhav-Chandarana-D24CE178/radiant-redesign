@@ -1,7 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Filter, Star, MapPin, Shield, Clock, ChevronDown, X, Phone, MessageSquare } from 'lucide-react';
+import { motion } from 'framer-motion';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
+import PageTransition from '@/components/animations/PageTransition';
+import ScrollReveal from '@/components/animations/ScrollReveal';
 
 const specializations = [
   { id: 'all', name: 'All Specializations' },
