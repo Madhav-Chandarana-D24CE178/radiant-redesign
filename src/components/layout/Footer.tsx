@@ -1,17 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  Facebook, 
-  Twitter, 
-  Instagram, 
-  Linkedin, 
-  Mail, 
-  Phone, 
-  MapPin,
-  ArrowRight
-} from 'lucide-react';
+import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import handyfixLogo from '@/assets/handyfix-logo.png';
+import ScrollReveal from '@/components/animations/ScrollReveal';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
