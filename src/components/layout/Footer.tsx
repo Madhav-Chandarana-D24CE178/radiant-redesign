@@ -28,38 +28,18 @@ const Footer: React.FC = () => {
               Your trusted platform for finding skilled professionals for all your home service needs. Quality work, guaranteed satisfaction.
             </p>
             <div className="flex gap-3">
-              <a
-                href="https://facebook.com/HandyFix"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-              >
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a
-                href="https://twitter.com/HandyFix"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-              >
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a
-                href="https://instagram.com/HandyFix"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-              >
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a
-                href="https://linkedin.com/company/HandyFix"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-              >
-                <Linkedin className="w-5 h-5" />
-              </a>
+              {[
+                { href: 'https://facebook.com/HandyFix', icon: Facebook },
+                { href: 'https://twitter.com/HandyFix', icon: Twitter },
+                { href: 'https://instagram.com/HandyFix', icon: Instagram },
+                { href: 'https://linkedin.com/company/HandyFix', icon: Linkedin },
+              ].map((social) => (
+                <motion.a key={social.href} href={social.href} target="_blank" rel="noopener noreferrer"
+                  className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors duration-300"
+                  whileHover={{ scale: 1.15, y: -3 }} whileTap={{ scale: 0.95 }} transition={{ type: 'spring', stiffness: 300 }}>
+                  <social.icon className="w-5 h-5" />
+                </motion.a>
+              ))}
             </div>
           </div>
 
