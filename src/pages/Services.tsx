@@ -434,11 +434,14 @@ const Services: React.FC = () => {
                       {service.duration}
                     </span>
                   </div>
-                  <Button variant="default" className="w-full mt-4">
-                    Book Now
-                  </Button>
+                  <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+                    <Button variant="default" className="w-full mt-4">
+                      Book Now
+                    </Button>
+                  </motion.div>
                 </div>
-              </div>
+              </motion.div>
+              </ScrollReveal>
             ))}
           </div>
 
