@@ -476,6 +476,7 @@ const FindProviders: React.FC = () => {
           )}
         </div>
       </section>
+      </PageTransition>
     </Layout>
   );
 };

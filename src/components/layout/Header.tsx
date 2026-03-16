@@ -196,20 +196,26 @@ const Header: React.FC = () => {
           </div>
         </div>
 
-        {isMenuOpen && (
-          <div className="md:hidden py-4 animate-fade-in">
-            <nav className="flex flex-col gap-2">
-              {navLinks.map((link) => (
-                <Link key={link.path} to={link.path} onClick={() => setIsMenuOpen(false)} className={`px-4 py-3 rounded-xl text-sm font-medium transition-all ${location.pathname === link.path ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}>
-                  {link.label}
-                </Link>
-              ))}
-              <Link to="/emergency" onClick={() => setIsMenuOpen(false)} className="mt-2">
-                <Button variant="emergency" className="w-full gap-2"><AlertTriangle className="w-4 h-4" />Emergency Services</Button>
-              </Link>
-            </nav>
-          </div>
-        )}
+        <AnimatePresence>
+          {isMenuOpen && (
+            <motion.div className="md:hidden py-4" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.3 }}>
+              <nav className="flex flex-col gap-2">
+                {navLinks.map((link, i) => (
+                  <motion.div key={link.path} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}>
+                    <Link to={link.path} onClick={() => setIsMenuOpen(false)} className={`block px-4 py-3 rounded-xl text-sm font-medium transition-all ${location.pathname === link.path ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:text-foreground hover:bg-muted'}`}>
+                      {link.label}
+                    </Link>
+                  </motion.div>
+                ))}
+                <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: navLinks.length * 0.05 }}>
+                  <Link to="/emergency" onClick={() => setIsMenuOpen(false)} className="mt-2 block">
+                    <Button variant="emergency" className="w-full gap-2"><AlertTriangle className="w-4 h-4" />Emergency Services</Button>
+                  </Link>
+                </motion.div>
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </header>
   );

@@ -456,6 +456,7 @@ const Services: React.FC = () => {
           )}
         </div>
       </section>
+      </PageTransition>
     </Layout>
   );
 };
