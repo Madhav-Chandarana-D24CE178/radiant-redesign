@@ -378,11 +378,8 @@ const FindProviders: React.FC = () => {
           {/* Providers List */}
           <div className="space-y-4">
             {sortedProviders.map((provider, index) => (
-              <div 
-                key={provider.id} 
-                className="provider-card p-6 animate-fade-up"
-                style={{ animationDelay: `${index * 0.05}s` }}
-              >
+              <ScrollReveal key={provider.id} delay={index * 0.05} duration={0.5}>
+              <motion.div className="provider-card p-6" whileHover={{ y: -4 }} transition={{ duration: 0.3 }}>
                 <div className="flex flex-col md:flex-row gap-6">
                   {/* Image */}
                   <div className="flex-shrink-0">
