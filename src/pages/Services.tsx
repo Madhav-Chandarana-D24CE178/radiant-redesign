@@ -203,17 +203,18 @@ const Services: React.FC = () => {
 
   return (
     <Layout>
+      <PageTransition>
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary/5 via-transparent to-accent/5 py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-10">
+          <ScrollReveal className="max-w-3xl mx-auto text-center mb-10">
             <h1 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4">
               Browse Our Services
             </h1>
             <p className="text-lg text-muted-foreground">
               Find the perfect service for your home needs from our wide range of professional offerings.
             </p>
-          </div>
+          </ScrollReveal>
 
           {/* Search Bar */}
           <div className="max-w-2xl mx-auto">
