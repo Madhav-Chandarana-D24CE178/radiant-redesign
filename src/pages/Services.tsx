@@ -1,8 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Search, Filter, Star, MapPin, Clock, Shield, ChevronDown, X } from 'lucide-react';
+import { motion } from 'framer-motion';
 import Layout from '@/components/layout/Layout';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
+import PageTransition from '@/components/animations/PageTransition';
+import ScrollReveal from '@/components/animations/ScrollReveal';
 
 const serviceCategories = [
   { id: 'all', name: 'All Services' },
