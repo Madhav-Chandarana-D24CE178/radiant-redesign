@@ -100,9 +100,10 @@ const Header: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="flex h-16 items-center justify-between">
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+            <motion.div className="w-10 h-10 rounded-xl overflow-hidden flex items-center justify-center"
+              whileHover={{ scale: 1.15, rotate: 5 }} transition={{ type: 'spring', stiffness: 300 }}>
               <img src={handyfixLogo} alt="HandyFix Logo" className="w-full h-full object-contain" />
-            </div>
+            </motion.div>
             <span className="font-display font-bold text-xl text-foreground">HandyFix</span>
           </Link>
 
