@@ -460,7 +460,8 @@ const FindProviders: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
+              </ScrollReveal>
             ))}
           </div>
 
