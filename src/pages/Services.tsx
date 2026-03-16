@@ -396,16 +396,18 @@ const Services: React.FC = () => {
           {/* Services Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {sortedServices.map((service, index) => (
-              <div 
+              <ScrollReveal 
                 key={service.id} 
-                className="service-card animate-fade-up"
-                style={{ animationDelay: `${index * 0.05}s` }}
+                delay={index * 0.05}
+                duration={0.5}
               >
-                <div className="relative">
-                  <img 
+              <motion.div className="service-card" whileHover={{ y: -6 }} transition={{ duration: 0.3 }}>
+                <div className="relative overflow-hidden rounded-xl">
+                  <motion.img 
                     src={service.image} 
                     alt={service.name}
-                    className="w-full h-48 object-cover rounded-xl"
+                    className="w-full h-48 object-cover"
+                    whileHover={{ scale: 1.05 }} transition={{ duration: 0.4 }}
                   />
                   {service.popular && (
                     <div className="absolute top-3 left-3 px-3 py-1 rounded-full bg-primary text-primary-foreground text-xs font-medium">
